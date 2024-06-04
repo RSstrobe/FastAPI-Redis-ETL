@@ -1,19 +1,30 @@
 services:
-  redis_auth:
-    container_name: redis_auth
-    hostname: redis_auth
+  redis_data:
+    container_name: redis_data
+    hostname: redis_data
     image: redis:latest
     env_file: .env
     restart: always
     volumes:
-      - /redis_auth/dаta:/root/redis
-      - /redis_auth/redis.conf:/usr/local/etc/redis/redis.conf
+      - /redis_data/dаta:/root/redis
+      - /redis_data/redis.conf:/usr/local/etc/redis/redis.conf
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: ${REDIS_PORT}
       REDIS_DATABASES: ${REDIS_DATABASES}
     networks:
       - app_network
+
+  user_info:
+    container_name: user_info
+    env_file: .env
+    build: data_app
+    networks:
+      - app_network
+    ports:
+      - ${BACKEND_PORT}:${BACKEND_PORT}
+    depends_on:
+      - redis_data
 
 networks:
   app_network:
