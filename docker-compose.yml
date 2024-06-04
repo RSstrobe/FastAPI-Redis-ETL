@@ -1,7 +1,7 @@
 services:
-  redis_auth:
-    container_name: redis_auth
-    hostname: redis_auth
+  redis_phone:
+    container_name: redis_phone
+    hostname: redis_phone
     image: redis:latest
     env_file: .env
     restart: always
@@ -14,6 +14,17 @@ services:
       REDIS_DATABASES: ${REDIS_DATABASES}
     networks:
       - app_network
+
+  user_info:
+    container_name: user_info
+    env_file: .env
+    build: phone_app
+    networks:
+      - app_network
+    ports:
+      - ${BACKEND_PORT}:${BACKEND_PORT}
+    depends_on:
+      - redis_phone
 
 networks:
   app_network:
