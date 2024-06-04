@@ -1,0 +1,20 @@
+services:
+  redis_auth:
+    container_name: redis_auth
+    hostname: redis_auth
+    image: redis:latest
+    env_file: .env
+    restart: always
+    volumes:
+      - /redis_auth/dаta:/root/redis
+      - /redis_auth/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_DATABASES: ${REDIS_DATABASES}
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
