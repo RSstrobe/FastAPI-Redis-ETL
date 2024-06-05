@@ -1,0 +1,50 @@
+services:
+  test_redis_data:
+    container_name: test_redis_data
+    hostname: test_redis_data
+    image: redis:${REDIS_VERSION}
+    env_file: .env
+    restart: always
+    volumes:
+      - /test_redis_data/dаta:/root/redis
+      - /test_redis_data/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_DATABASES: ${REDIS_DATABASE}
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    networks:
+      - app_network
+
+  user_info:
+    container_name: user_info
+    env_file: .env
+    build: ../../.
+    image: user_info_img
+    networks:
+      - app_network
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    depends_on:
+      - test_redis_data
+
+  test_user_info:
+    container_name: test_user_info
+    env_file: .env
+    image: user_info_img
+    environment:
+      PROJECT_NAME: "user_info_tests"
+    entrypoint: >
+      sh -c "pip install --no-cache-dir -r tests/functional/requirements.txt
+      && python tests/functional/utils/wait_for_redis.py
+      && pytest -p no:cacheprovider tests/functional/src"
+    networks:
+      - app_network
+    depends_on:
+      - test_redis_data
+      - user_info
+
+networks:
+  app_network:
+    driver: bridge

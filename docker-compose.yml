@@ -2,7 +2,7 @@ services:
   redis_data:
     container_name: redis_data
     hostname: redis_data
-    image: redis:latest
+    image: redis:${REDIS_VERSION}
     env_file: .env
     restart: always
     volumes:
@@ -11,7 +11,9 @@ services:
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_PORT: ${REDIS_PORT}
-      REDIS_DATABASES: ${REDIS_DATABASES}
+      REDIS_DATABASES: ${REDIS_DATABASE}
+    expose:
+      - ${REDIS_PORT}
     networks:
       - app_network
 

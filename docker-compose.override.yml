@@ -1,4 +1,0 @@
-services:
-  redis_phone:
-    ports:
-      - ${REDIS_PORT}:${REDIS_PORT}
