@@ -90,4 +90,4 @@ if __name__ == "__main__":
         ETL(pg_conn).produce()
     pg_conn.close()
     print(datetime.datetime.now() - now)
-    # порядка 0:01:15.229734
+    # время порядка 0:01:15.229734
