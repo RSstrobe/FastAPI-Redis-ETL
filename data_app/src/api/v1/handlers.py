@@ -1,9 +1,9 @@
 from fastapi import APIRouter, status, Query
 
 from deps import UserDataService
-from schemas.user_info import UserInfoSchema, PhoneDataSchema
+from schemas.user_info import UserInfoSchema, PhoneDataSchema, PhoneNumberType
 
-data_router = APIRouter(prefix='/data', tags=['user_info'])
+data_router = APIRouter(prefix='/data', tags=['Data'])
 
 
 @data_router.post(
@@ -45,7 +45,7 @@ async def change_data(
 )
 async def get_data(
         service: UserDataService,
-        phone: str = Query(description="Номер телефона")
+        phone: PhoneNumberType = Query(description="Номер телефона")
 ):
     address = await service.get_data(phone)
     return UserInfoSchema(phone=phone, address=address)

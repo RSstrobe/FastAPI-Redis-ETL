@@ -21,3 +21,15 @@ async def make_post_request(aiohttp_session, url: str, body: dict):
     }
     async with aiohttp_session.post(**kwarg) as response:
         return await response.json(), response.status
+
+
+async def make_patch_request(aiohttp_session, url: str, body: dict):
+    header = {"accept": "application/json", "Content-Type": "application/json"}
+    kwarg = {
+        "url": url,
+        "raise_for_status": True,
+        "headers": header,
+        "data": json.dumps(body),
+    }
+    async with aiohttp_session.patch(**kwarg) as response:
+        return await response.json(), response.status
