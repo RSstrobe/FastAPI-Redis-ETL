@@ -6,7 +6,6 @@ import sys
 import psycopg2
 from psycopg2.extensions import connection as _connection
 from psycopg2.extras import DictCursor
-from psycopg2.extras import execute_batch
 
 logging.basicConfig(
     stream=sys.stdout,
@@ -57,26 +56,8 @@ def read_json(name: str):
     return data
 
 
-def insert_pg(pg_conn: _connection):
-    with pg_conn.cursor() as pg_curs:
-        for table in [SHORT_NAMES_TABLE, FULL_NAMES_TABLE]:
-            logger.info(f"Заполнение данных для таблицы {table}")
-            data = read_json(table)
-            prepared_data = [tuple(row.values()) for row in data]
-            query = f"""
-                insert into {SCHEMA}.{table}
-                values (%s, %s)
-                on conflict (name) do nothing;
-                COMMIT;
-            """
-
-            execute_batch(pg_curs, query, prepared_data, page_size=10_000)
-            logger.info(f"Заполнение данных для таблицы {table} завершено")
-
-
 if __name__ == "__main__":
     with psycopg2.connect(**DSN, cursor_factory=DictCursor) as pg_conn:
         create_db(pg_conn)
-        insert_pg(pg_conn)
     pg_conn.close()
-    logger.info(f"Таблицы инициализированны и заполнены данными")
+    logger.info(f"Таблицы инициализированны")

@@ -1,10 +1,10 @@
 import json
-
+import pandas as pd
 from faker import Faker
 import random
 
 fake = Faker()
-short_filenames = [fake.file_name('audio', '') for _ in range(700_000)]
+short_filenames = [f"number{i}" for i in range(700_000)]
 
 FILE_EXTENSIONS = [
     ".au",
@@ -39,9 +39,5 @@ for short_filename in short_filenames:
 
 FULL_NAME_TABLE_DATA = random.sample(FULL_NAME_TABLE_DATA, k=500_000)
 
-with open("short_names.json", "w") as fs:
-    json.dump(SHORT_NAME_TABLE_DATA, fs)
-
-
-with open("full_names.json", "w") as ff:
-    json.dump(FULL_NAME_TABLE_DATA, ff)
+pd.DataFrame(SHORT_NAME_TABLE_DATA).to_csv("full_data.csv")
+pd.DataFrame(FULL_NAME_TABLE_DATA).to_csv("short_data.csv")
